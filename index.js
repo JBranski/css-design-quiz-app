@@ -1,54 +1,59 @@
 // questions for the quiz
 const quizQuestions = [
 	{
-		question: "1",
+		key: "colorCheck",
+		question: "What color is #663399?",
 		choices: [
-			"1",
-			"2",
-			"3",
-			"4"
+			"Indigo",
+			"RebeccaPurple",
+			"MediumOrchid",
+			"SlateBlue"
 		],
-		answer: "",
+		answer: "RebeccaPurple",
 	},
 	{
-		question: "2",
+		key: "cssTag",
+		question: "What tag do you use to link to an external css document?",
 		choices: [
-			"1",
-			"2",
-			"3",
-			"4"
+			"&#60;css&#62;",
+			"&#60;style&#62;",
+			"&#60;link&#62;",
+			"&#60;a&#62;"
 		],
-		answer: "",
+		answer: "&#60;link&#62;",
 	},
 	{
-		question: "3",
+		key: "customProperty",
+		question: "How would you access the CSS custom property --purple?",
 		choices: [
-			"",
-			"",
-			"",
-			""
+			"var(--purple)",
+			"$purple",
+			"@purple",
+			"--purple"
 		],
-		answer: "",
+		answer: "var(--purple)",
 	},
 	{
-		question: "4",
+		key: "cssPreprocessor",
+		question: "Which item below is not a CSS preprocessor",
 		choices: [
-			"",
-			"",
-			"",
-			""
+			"Sass",
+			"Stylus",
+			"Bootstrap",
+			"Less"
 		],
-		answer: "",
+		answer: "Bootstrap",
 	},
 	{
-		question: "5",
+		key: "flexbox",
+		question: "How do you make a flexbox element",
 		choices: [
-			"",
-			"",
-			"",
-			""
+			"display: flexbox;",
+			"position: flexbox;",
+			"display: flex;",
+			"box-sizing: flex;"
 		],
-		answer: "",
+		answer: "display: flex;",
 	},
 ];
 
@@ -92,24 +97,39 @@ function renderForm(){
 	let formArea = document.getElementById("js-form");
 	let questionFormat;
 	let answersFormat;
+
+	// loop through the questions
 	for(let i = 0; i < newQuizOrder.length; i++){
-		let answersFormat = `
-			<label>
-				<input type="radio" name="question${currentQuestion + 1}">
-				Hello
-			</label>
-		`;
-	};
+		questionFormat = `<fieldset class="hidden"><legend>${newQuizOrder[currentQuestion].question}</legend>`;
+
+		// loop through the choices
+		for(let j = 0; j < newQuizOrder[j].choices.length; j++){
+			let answersFormat = `
+				<label>
+					<input type="radio" name="${newQuizOrder[i].key}">
+					${newQuizOrder[i].choices[j]}
+				</label>
+			`;
+			questionFormat += answersFormat;
+			
+		};
+		currentQuestion++;
+		questionFormat += `</fieldset>`
+		formArea.innerHTML += questionFormat;
+	}
+	
 }
 
 
 // function to display questions after the next button is pressed
 function nextQuestion(){
-	
+	console.log("hello");
 }
-document.getElementById("js-next-button").addEventListener("mouseup", function(){
-	nextQuestion();
-});
+
+const nextQuestionBtn = document.getElementById("js-next-button");
+nextQuestionBtn.addEventListener('click', function(){
+nextQuestion();
+})
 
 
 // callback function
