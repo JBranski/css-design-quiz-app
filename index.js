@@ -160,6 +160,7 @@ startBtn.addEventListener("keyup", function(e){
 });
 
 
+
 // start the quiz
 function hideHomeScreen(){
 	document.querySelector(".js-home-screen").classList.toggle("hidden");
@@ -174,8 +175,10 @@ function checkAnswer(){
 	
 	if(selectedAnswer == newQuizOrder[currentQuestion - 1].answer){
 		console.log(currentScore)
-		return currentScore++;
+		currentScore++
+		document.querySelector(".js-total-correct").innerHTML = currentScore;
 	}
+	
 	
 	toggleCheckButton();
 	toggleNextButton();
@@ -185,6 +188,9 @@ function checkAnswer(){
 
 // function to display questions after the next button is pressed
 function nextQuestion() {
+	let questionTotal = document.querySelector(".js-question-total").innerHTML;
+	// questionTotal.innerHTML(`${currentQuestion}`);
+	// document.querySelector(".js-question-total").innerHTML(`${currentQuestion}/${newQuizOrder.length}`);
 	if(!(currentQuestion === 0)){
 		document.querySelector(`fieldset:nth-of-type(${currentQuestion})`).classList.toggle("hidden");
 	}
