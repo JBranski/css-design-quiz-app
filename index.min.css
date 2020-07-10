@@ -1,2 +1,2 @@
-.hidden{display:none}
+.hidden{display:none}.disabled{pointer-events:none;cursor:default}
 /*# sourceMappingURL=index.min.css.map */

@@ -20,7 +20,7 @@ const quizQuestions = [
 			"&#60;link&#62;",
 			"&#60;a&#62;"
 		],
-		answer: "&#60;link&#62;",
+		answer: "<link>",
 	},
 	{
 		key: "customProperty",
@@ -58,14 +58,16 @@ const quizQuestions = [
 ];
 
 
-// initial variable to set default question count to 0
+// initial variables for current question and score
 let currentQuestion = 0;
-
-
+let currentScore = 0;
 
 // store the shuffled questions in an array
 let newQuizOrder = [];
 
+// button containers into variables
+let nextBtn, checkBtn;
+let startBtn = document.querySelector("button#js-start-btn");
 
 
 // shuffles the order of itemsquestions or answers
@@ -100,41 +102,123 @@ function renderForm(){
 
 	// loop through the questions
 	for(let i = 0; i < newQuizOrder.length; i++){
-		questionFormat = `<fieldset class="hidden"><legend>${newQuizOrder[currentQuestion].question}</legend>`;
+		questionFormat = `<fieldset class="hidden"><legend>${newQuizOrder[i].question}</legend>`;
 
 		// loop through the choices
 		for(let j = 0; j < newQuizOrder[j].choices.length; j++){
 			let answersFormat = `
 				<label>
-					<input type="radio" name="${newQuizOrder[i].key}">
+					<input type="radio" name="${newQuizOrder[i].key}" value="${newQuizOrder[i].choices[j]}">
 					${newQuizOrder[i].choices[j]}
 				</label>
 			`;
 			questionFormat += answersFormat;
 			
 		};
-		currentQuestion++;
 		questionFormat += `</fieldset>`
 		formArea.innerHTML += questionFormat;
 	}
+
+	// add buttons to the end of the form
+	formArea.innerHTML += `<button id="js-check-btn" type="button" class="disabled">Check</button><button id="js-next-btn" type="button" >Next</button>`;
+
+	// store the buttons into their variables after they are rendered
+	checkBtn = document.getElementById("js-check-btn");
+	nextBtn = document.getElementById("js-next-btn");
+
+	checkBtn.addEventListener("click", checkAnswer);
+	checkBtn.addEventListener("keyup", function(e){
+		if(e.key === "Enter"){
+			checkAnswer;
+		}
+		return false;
+	});
+	nextBtn.addEventListener("click", nextQuestion);
+	nextBtn.addEventListener("keyup", function(e){
+		if(e.key === "Enter"){
+			nextQuestion;
+		}
+		console.log(e.key)
+		return false;
+	});
 	
 }
 
 
-// function to display questions after the next button is pressed
-function nextQuestion(){
-	console.log("hello");
+
+// Begin the quiz
+startBtn.addEventListener("click", function(){
+	hideHomeScreen();
+	nextQuestion();
+});
+startBtn.addEventListener("keyup", function(e){
+	if(e.key === "Enter"){
+		hideHomeScreen();
+		nextQuestion();
+	}
+	return false;
+});
+
+
+// start the quiz
+function hideHomeScreen(){
+	document.querySelector(".js-home-screen").classList.toggle("hidden");
+	document.querySelector(".js-form-screen").classList.toggle("hidden");
 }
 
-const nextQuestionBtn = document.getElementById("js-next-button");
-nextQuestionBtn.addEventListener('click', function(){
-nextQuestion();
-})
+
+
+// check quiz answer
+function checkAnswer(){
+	let selectedAnswer = document.querySelector(`input[name="${newQuizOrder[currentQuestion - 1].key}"]:checked`).value;
+	
+	if(selectedAnswer == newQuizOrder[currentQuestion - 1].answer){
+		console.log(currentScore)
+		return currentScore++;
+	}
+	
+	toggleCheckButton();
+	toggleNextButton();
+}
+
+
+
+// function to display questions after the next button is pressed
+function nextQuestion() {
+	if(!(currentQuestion === 0)){
+		document.querySelector(`fieldset:nth-of-type(${currentQuestion})`).classList.toggle("hidden");
+	}
+	document.querySelector(`fieldset:nth-of-type(${currentQuestion + 1})`).classList.toggle("hidden");
+	currentQuestion++;
+
+	toggleCheckButton();
+	toggleNextButton();
+	lockChoices();
+}
+
+
+
+// toggle check button to toggle it being clickable
+function toggleCheckButton(){
+	checkBtn.classList.toggle("disabled");
+}
+
+
+// toggle next button to toggle it being clickable
+function toggleNextButton(){
+	nextBtn.classList.toggle("disabled");
+}
+
+
+// turn off being able to select radio buttons after being selected
+function lockChoices(){
+
+}
 
 
 // callback function
 window.addEventListener('load', function(){
-	console.log('page is fully loaded');
+	// console.log('page is fully loaded');
 	newQuizOrder = shuffleItems(quizQuestions);
 	shuffleAnswerSelector(newQuizOrder);
 	renderForm();
