@@ -35,7 +35,7 @@ const quizQuestions = [
 	},
 	{
 		key: "cssPreprocessor",
-		question: "Which item below is not a CSS preprocessor",
+		question: "Which item below is not a CSS preprocessor?",
 		choices: [
 			"Sass",
 			"Stylus",
@@ -46,7 +46,7 @@ const quizQuestions = [
 	},
 	{
 		key: "flexbox",
-		question: "How do you make a flexbox element",
+		question: "How do you make a flexbox element?",
 		choices: [
 			"display: flexbox;",
 			"position: flexbox;",
@@ -68,6 +68,8 @@ let newQuizOrder = [];
 // button containers into variables
 let nextBtn, checkBtn;
 let startBtn = document.querySelector("button#js-start-btn");
+
+let formArea = document.getElementById("js-form");
 
 
 // shuffles the order of itemsquestions or answers
@@ -96,9 +98,10 @@ function shuffleAnswerSelector(answers){
 
 // renders the form questions and hides all questions
 function renderForm(){
-	let formArea = document.getElementById("js-form");
 	let questionFormat;
 	let answersFormat;
+
+	document.querySelector(".js-question-total").innerHTML = `0/${newQuizOrder.length}`;
 
 	// loop through the questions
 	for(let i = 0; i < newQuizOrder.length; i++){
@@ -120,16 +123,16 @@ function renderForm(){
 	}
 
 	// add buttons to the end of the form
-	formArea.innerHTML += `<button id="js-check-btn" type="button" class="disabled">Check</button><button id="js-next-btn" type="button" >Next</button>`;
+	formArea.innerHTML += `<button id="js-check-btn" type="button" disabled>Check</button><button id="js-next-btn" type="button" >Next</button>`;
 
 	// store the buttons into their variables after they are rendered
 	checkBtn = document.getElementById("js-check-btn");
 	nextBtn = document.getElementById("js-next-btn");
 
-	checkBtn.addEventListener("click", checkAnswer);
+	checkBtn.addEventListener("click", checkIfAnswered);
 	checkBtn.addEventListener("keyup", function(e){
 		if(e.key === "Enter"){
-			checkAnswer;
+			checkIfAnswered;
 		}
 		return false;
 	});
@@ -169,34 +172,62 @@ function hideHomeScreen(){
 
 
 
-// check quiz answer
-function checkAnswer(){
-	let selectedAnswer = document.querySelector(`input[name="${newQuizOrder[currentQuestion - 1].key}"]:checked`).value;
-	
-	if(selectedAnswer == newQuizOrder[currentQuestion - 1].answer){
-		console.log(currentScore)
-		currentScore++
-		document.querySelector(".js-total-correct").innerHTML = currentScore;
-	}
-	
-	
-	toggleCheckButton();
-	toggleNextButton();
+// See results page
+function seeQuizResults(){
+	document.querySelector(".js-form-screen").classList.toggle("hidden");
+	document.querySelector(".js-results-screen").classList.toggle("hidden");
+	document.querySelector(".js-results-screen p").innerHTML = `You scored a ${(currentScore/currentQuestion)*100}%!`
 }
 
 
 
-// function to display questions after the next button is pressed
-function nextQuestion() {
-	let questionTotal = document.querySelector(".js-question-total").innerHTML;
-	// questionTotal.innerHTML(`${currentQuestion}`);
-	// document.querySelector(".js-question-total").innerHTML(`${currentQuestion}/${newQuizOrder.length}`);
-	if(!(currentQuestion === 0)){
-		document.querySelector(`fieldset:nth-of-type(${currentQuestion})`).classList.toggle("hidden");
-	}
-	document.querySelector(`fieldset:nth-of-type(${currentQuestion + 1})`).classList.toggle("hidden");
-	currentQuestion++;
+// check to see if an answer is selected
+// TODO ERROR CARD
+function checkIfAnswered(){
+	let options = document.getElementsByName(newQuizOrder[currentQuestion - 1].key);
 
+	for (let i = 0; i < options.length; i++){
+		if(options[i].checked){
+			checkIfCorrect();
+		}
+	}
+}
+
+
+
+// check quiz answer
+function checkIfCorrect(){
+
+	selectedAnswer = document.querySelector(`input[name="${newQuizOrder[currentQuestion - 1].key}"]:checked`);
+	
+	let quizChoices = document.querySelectorAll(`input[name="${newQuizOrder[currentQuestion - 1].key}"]`);
+
+	for(let i = 0; i < quizChoices.length; i++){
+		quizChoices[i].parentElement.classList.add("answers")
+	}
+
+	if(!selectedAnswer){
+		console.log("ERROR - PLEASE ANSWER QUESTION");
+	}
+	else if(selectedAnswer.value == newQuizOrder[currentQuestion - 1].answer){
+		currentScore++
+		document.querySelector(".js-total-correct").innerHTML = currentScore;
+		selectedAnswer.parentElement.classList.toggle("correct-answer");
+	}
+	else {
+		selectedAnswer.parentElement.classList.toggle("wrong-answer");
+		for(let i = 0; i < quizChoices.length; i++){
+			if(quizChoices[i].value == newQuizOrder[currentQuestion -1].answer){
+				quizChoices[i].parentElement.classList.add("correct-answer");
+			}
+		}
+	}
+
+	if(currentQuestion === newQuizOrder.length){
+		nextBtn.innerHTML = "Results";
+	}
+	
+	
 	toggleCheckButton();
 	toggleNextButton();
 	lockChoices();
@@ -204,21 +235,58 @@ function nextQuestion() {
 
 
 
+// function to display questions after the next button is pressed
+function nextQuestion() {
+
+	if(currentQuestion === newQuizOrder.length){
+		seeQuizResults();
+		return false;
+	}
+	else if(!(currentQuestion === 0)){
+		document.querySelector(`fieldset:nth-of-type(${currentQuestion})`).classList.toggle("hidden");
+	}
+	document.querySelector(`fieldset:nth-of-type(${currentQuestion + 1})`).classList.toggle("hidden");
+	currentQuestion++;
+
+	document.querySelector(".js-question-total").innerHTML = `${currentQuestion}/${newQuizOrder.length}`;
+
+	toggleCheckButton();
+	toggleNextButton();
+	
+}
+
+
+
 // toggle check button to toggle it being clickable
 function toggleCheckButton(){
-	checkBtn.classList.toggle("disabled");
+	checkBtn.toggleAttribute("disabled");
 }
 
 
 // toggle next button to toggle it being clickable
 function toggleNextButton(){
-	nextBtn.classList.toggle("disabled");
+	nextBtn.toggleAttribute("disabled");
 }
 
 
 // turn off being able to select radio buttons after being selected
 function lockChoices(){
+	document.querySelector(`fieldset:nth-of-type(${currentQuestion})`).toggleAttribute("disabled");
+}
 
+
+
+// Reset the form
+document.getElementById("js-restart-form").addEventListener("click", restartQuiz);
+document.getElementById("js-restart-form").addEventListener("keyup", function(e){
+	if(e.key === "Enter"){
+		restartQuiz;
+	}
+	return false;
+});
+
+function restartQuiz(){
+	location.reload();
 }
 
 

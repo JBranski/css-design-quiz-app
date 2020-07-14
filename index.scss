@@ -1,3 +1,137 @@
+@import "_variables";
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html, body{
+	overflow: auto;
+}
+
+html{
+	font-size: 16px;
+}
+
+body{
+	background: $white;
+	background-image: linear-gradient($dark-blue, $blue);
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 100vh;
+	font-family: 'Titillium Web', sans-serif;
+	font-size: 1.375rem;
+	position: relative;
+	color: $black;
+	line-height: 1.2;
+}
+
+header{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	color: $white;
+	padding: 1rem;
+
+	h1{
+		text-align: center;
+		flex: 100%;
+		font-size: 1.75rem;
+		margin-bottom: .5em;
+	}
+}
+
+main{
+	width: 90%;
+	margin: 0 auto 2em;
+	color: $white;
+	line-height: 1.5;
+
+	p{
+		margin-bottom: 1rem;
+	}
+}
+
+form{
+	background-color: $white;
+	color: $black;
+
+	fieldset{
+		position: relative;
+		border: none;
+		display: flex;
+		flex-direction: column;
+		box-shadow: 0 2px 2px 2px rgba(53,56,57, .4);
+
+		legend{
+			background-color: $white;
+			padding: .3em;
+			border-bottom: 1px solid $black;
+			width: 100%;
+		}
+
+		label{
+			display: block;
+			flex: 100%;
+			height: 500px;
+			padding: 15px;
+			border-bottom: 1px solid rgba(53,56,57, .4);
+			cursor: pointer;
+
+			&:hover{
+				background-color: $light-blue;
+			}
+
+			input[type="radio"]{
+				margin: 1em;
+			}
+		}
+	}
+
+	button{
+		width: 50%;
+		margin: 0;
+		height: 50px;
+		font-size: 1.375rem;
+		font-weight: bold;
+		border: 2px solid $white;
+		color: $white;
+		letter-spacing: 1px;
+		background-color: $blue;
+		cursor: pointer;
+
+		&:disabled{
+			background-color: $white;
+			color: $black;
+			cursor: not-allowed; 
+		}
+	}
+}
+
+footer{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	font-size: 1rem;
+	background-color: $black;
+	text-align: center;
+	height: 1.5em;
+	margin-top: 2em;
+
+	p, a{
+		color: $white;
+	}
+
+	a{
+		text-decoration: none;
+	}
+}
+
+.js-home-screen{
+
+}
+
 .hidden{
 	display: none;
 }
@@ -5,4 +139,18 @@
 .disabled{
 	pointer-events: none;
 	cursor: default;
+}
+
+label.answers{
+	background-color: $light-gray;
+	color: $dark-gray;
+	cursor: default;
+}
+
+label.correct-answer{
+	background-color:  $green;
+}
+
+label.wrong-answer{
+	background-color: $red;
 }
