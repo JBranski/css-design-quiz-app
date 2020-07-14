@@ -166,17 +166,17 @@ startBtn.addEventListener("keyup", function(e){
 
 // start the quiz
 function hideHomeScreen(){
-	document.querySelector(".js-home-screen").classList.toggle("hidden");
-	document.querySelector(".js-form-screen").classList.toggle("hidden");
+	$(".js-home-screen").toggleClass("hidden");
+	$(".js-form-screen").toggleClass("hidden");
 }
 
 
 
 // See results page
 function seeQuizResults(){
-	document.querySelector(".js-form-screen").classList.toggle("hidden");
-	document.querySelector(".js-results-screen").classList.toggle("hidden");
-	document.querySelector(".js-results-screen p").innerHTML = `You scored a ${(currentScore/currentQuestion)*100}%!`
+	$(".js-form-screen").toggleClass("hidden");
+	$(".js-results-screen").toggleClass("hidden");
+	$(".js-results-screen p").text(`You scored a ${(currentScore/currentQuestion)*100}%!`)
 }
 
 
@@ -203,15 +203,15 @@ function checkIfCorrect(){
 	let quizChoices = document.querySelectorAll(`input[name="${newQuizOrder[currentQuestion - 1].key}"]`);
 
 	for(let i = 0; i < quizChoices.length; i++){
-		quizChoices[i].parentElement.classList.add("answers")
+		quizChoices[i].parentElement.classList.add("answers");
 	}
 
 	if(!selectedAnswer){
-		console.log("ERROR - PLEASE ANSWER QUESTION");
+		return false;
 	}
 	else if(selectedAnswer.value == newQuizOrder[currentQuestion - 1].answer){
 		currentScore++
-		document.querySelector(".js-total-correct").innerHTML = currentScore;
+		$(".js-total-correct").text(currentScore);
 		selectedAnswer.parentElement.classList.toggle("correct-answer");
 	}
 	else {
@@ -243,9 +243,9 @@ function nextQuestion() {
 		return false;
 	}
 	else if(!(currentQuestion === 0)){
-		document.querySelector(`fieldset:nth-of-type(${currentQuestion})`).classList.toggle("hidden");
+		$(`fieldset:nth-of-type(${currentQuestion})`).toggleClass("hidden");
 	}
-	document.querySelector(`fieldset:nth-of-type(${currentQuestion + 1})`).classList.toggle("hidden");
+	$(`fieldset:nth-of-type(${currentQuestion + 1})`).toggleClass("hidden");
 	currentQuestion++;
 
 	document.querySelector(".js-question-total").innerHTML = `${currentQuestion}/${newQuizOrder.length}`;
@@ -291,9 +291,11 @@ function restartQuiz(){
 
 
 // callback function
-window.addEventListener('load', function(){
+function beginDesignQuiz(){
 	// console.log('page is fully loaded');
 	newQuizOrder = shuffleItems(quizQuestions);
 	shuffleAnswerSelector(newQuizOrder);
 	renderForm();
-  });
+};
+
+$(beginDesignQuiz);
